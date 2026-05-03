@@ -7,7 +7,7 @@ on:
     - cron: '0 2 * * *'
   
   push:
-    branchs:
+    branches:
       - "feature/**"
     path:
       - "src/**"
