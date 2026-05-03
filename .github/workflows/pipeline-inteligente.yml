@@ -1,0 +1,49 @@
+name: ctt11
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    - cron: '0 2 * * *'
+  
+  push:
+    branchs:
+      - "feature/**"
+    path:
+      - "src/**"
+      - "!src/docs/**"
+
+jobs:
+  job_gerador:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Simular build e gerar arquivos
+        run: |
+          mkdir -p saida_build
+          echo "gerando relatorio 1" > saida_build/relatorio1.txt
+          echo "gerando relatorio 2" > saida_build/relatorio2.txt
+
+      - name: Upload dos artefatos
+        uses: actions/upload-artifact@v4
+        with:
+          name: meus-relatorios-oficiais
+          path: saida_build/
+
+jobs:
+  job_auditoria:
+    runs-on: ubuntu-latest
+    needs: job_gerador
+
+    steps:
+      - name: Baixar artefatos
+        uses: actions/download-artifact@v4
+        with:
+          name: meus-relatorios-oficiais
+
+      - name: Listar estrutura de pastas
+        run: ls -R
+
+      - name: Exibir conteúdo do relatorio1
+        run: cat relatorio1.txt
+
